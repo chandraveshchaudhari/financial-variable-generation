@@ -1,55 +1,12 @@
-""" basic """
 
 
-def calc_assets(liabilities, equity):
-    return liabilities + equity
 
 
-def calc_ebit(revenue, operating_expenses):
-    return revenue - operating_expenses
 
 
-def calc_equity(assets, liabilities):
-    return assets - liabilities
 
 
-def calc_gross_profit(revenue, cost_of_goods_sold):
-    return revenue - cost_of_goods_sold
 
-
-def calc_liabilities(assets, equity):
-    return assets - equity
-
-
-def calc_net_profit(gross_profit, operating_expenses, taxes, interest):
-    return gross_profit - operating_expenses - taxes - interest
-
-
-def calc_operating_profit(gross_profit, operating_expenses):
-    return gross_profit - operating_expenses
-
-
-def calc_sales_revenue(gross_sales, sales_of_returns_and_allowances):
-    return gross_sales - sales_of_returns_and_allowances
-
-
-""" debt """
-
-
-def calc_debt_equity_ratio(total_liabilities, shareholder_equity):
-    return total_liabilities / shareholder_equity
-
-
-def calc_debt_ratio(total_liabilities, total_assets):
-    return total_liabilities / total_assets
-
-
-def calc_debt_service_coverage_ratio(net_operating_income, total_debt_service):
-    return net_operating_income / total_debt_service
-
-
-def calc_long_term_debt_equity_ratio(long_term_liabilities, equity):
-    return long_term_liabilities / equity
 
 
 """ depreciation """

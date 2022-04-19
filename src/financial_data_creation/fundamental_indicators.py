@@ -32,6 +32,10 @@ def gross_profit(revenue, cost_of_goods_sold):
     return revenue - cost_of_goods_sold
 
 
+def growth_rate(final_value, initial_value):
+    return (final_value - initial_value) / initial_value
+
+
 def liabilities(assets_value, shareholders_equity_value):
     return assets_value - shareholders_equity_value
 
@@ -39,12 +43,33 @@ def liabilities(assets_value, shareholders_equity_value):
 def net_profit(gross_profit_value, operating_expenses, taxes, interest):
     return gross_profit_value - operating_expenses - taxes - interest
 
+
 def net_assets(total_fixed_assets, total_current_assets, total_current_liabilities, total_long_term_liabilities):
     return (total_fixed_assets + total_current_assets) - (total_current_liabilities + total_long_term_liabilities)
 
 
+def net_sales(sales_revenue_value, sales_returns, sales_discounts, sales_allowances):
+    return sales_revenue_value - (sales_returns + sales_discounts + sales_allowances)
+
+
 def operating_profit(gross_profit_value, operating_expenses):
     return gross_profit_value - operating_expenses
+
+
+def operating_income(revenue_value, fixed_or_direct_costs_value, variable_or_indirect_cost_value):
+    """
+    Operating Income = Gross Profit – Operating Expenses – Depreciation – Amortization
+    Operating Income = Total Revenue – Direct Costs – Indirect Cost
+    Operating Income = Net Earnings + Interest Expense + Tax
+    Returns
+    -------
+
+    """
+    return revenue_value - fixed_or_direct_costs_value - variable_or_indirect_cost_value
+
+
+def pre_tax_income(net_sales_value, cost_of_goods_sold_value, operating_expenses_value):
+    return net_sales_value - cost_of_goods_sold_value - operating_expenses_value
 
 
 def sales_revenue(gross_sales, sales_of_returns_and_allowances):
@@ -75,7 +100,7 @@ def units_of_production(cost_of_asset, residual_value, estimated_total_productio
     return ((cost_of_asset - residual_value) / estimated_total_production) * actual_production
 
 
-def straight_line_method( cost_of_fixed_asset, residual_value, useful_life_of_asset):
+def straight_line_method(cost_of_fixed_asset, residual_value, useful_life_of_asset):
     return (cost_of_fixed_asset - residual_value) / useful_life_of_asset
 
 
@@ -94,7 +119,6 @@ def dividend_yield(annual_dividend_per_share, price_per_share):
 
 def calc_earnings_per_share(net_earnings, number_of_shares):
     return net_earnings / number_of_shares
-
 
 
 """
@@ -133,7 +157,7 @@ def calc_earnings_per_share(net_earnings, number_of_shares):
 
 
 def asset_growth_rate(final_asset_value, initial_asset_value):
-    return (final_asset_value - initial_asset_value) / initial_asset_value
+    return growth_rate(final_asset_value, initial_asset_value)
 
 
 def asset_liabilities_ratio(assets_value, liabilities_value):
@@ -224,7 +248,6 @@ def operating_income_to_total_assets(operating_income, total_assets):
 
 def operating_leverage_formula(percentage_change_in_operating_income, percentage_change_in_revenue):
     return percentage_change_in_operating_income / percentage_change_in_revenue
-
 
 
 def degree_of_operating_leverage(contribution_margin_value, operating_margin_value):
@@ -319,60 +342,56 @@ def quick_or_acid_test_ratio(cash, marketable_securities, receivables, current_l
 - Total asset turnover 
 """
 
-def accounts_receivable_days_or_collection_period(accounts_receivable_value, revenue, number_of_days_in_year= 365):
+
+def accounts_receivable_days_or_collection_period(accounts_receivable_value, revenue, number_of_days_in_year=365):
     return (accounts_receivable_value / revenue) * number_of_days_in_year
 
 
 def accounts_receivable_turnover(net_credit_sales_value, average_accounts_receivable_value):
     return net_credit_sales_value / average_accounts_receivable_value
 
-def average_receivables_collection_days(net_sales, average_net_trade_receivables, number_of_days_in_year= 365):
-    return number_of_days_in_year / receivable_turnover(net_sales, average_net_trade_receivables)
+
+def average_receivables_collection_days(net_sales_value, average_net_trade_receivables, number_of_days_in_year=365):
+    return number_of_days_in_year / receivable_turnover(net_sales_value, average_net_trade_receivables)
 
 
-def average_days_payables_outstanding(payables_turnover_amount, number_of_days_in_year= 365):
+def average_days_payables_outstanding(payables_turnover_amount, number_of_days_in_year=365):
     return number_of_days_in_year / payables_turnover_amount
 
 
-def asset_turnover_ratio(net_sales, average_total_assets):
+def asset_turnover_ratio(net_sales_value, average_total_assets):
     """.. math:: \int_0^a x\, dx=\frac{1}{2}a^2
 
-    Parameters
-    ----------
-    average_total_assets
-    net_sales
-    total_assets
-
-    Returns
-    -------
-
     """
-    return net_sales / average_total_assets
+    return net_sales_value / average_total_assets
+
 
 def cash_conversion_cycle(inventory_conversion_period_value, receivables_conversion_period_value,
                           payables_conversion_period_value):
     return (inventory_conversion_period_value
             + receivables_conversion_period_value - payables_conversion_period_value)
 
-def current_asset_turnover_ratio(net_sales, average_current_assets):
+
+def current_asset_turnover_ratio(net_sales_value, average_current_assets):
     """.. math:: \int_0^a x\, dx=\frac{1}{2}a^2
 
     Parameters
     ----------
     average_current_assets
-    net_sales
+    net_sales_value
 
     Returns
     -------
 
     """
-    return net_sales / average_current_assets
+    return net_sales_value / average_current_assets
 
 
-def days_sales_outstanding(average_accounts_receivable_value, revenue, number_of_days_in_year= 365):
+def days_sales_outstanding(average_accounts_receivable_value, revenue, number_of_days_in_year=365):
     return number_of_days_in_year * (average_accounts_receivable_value / revenue)
 
-def days_sales_in_inventories(average_inventory_value, cost_of_goods_sold_value, number_of_days_in_year= 365):
+
+def days_sales_in_inventories(average_inventory_value, cost_of_goods_sold_value, number_of_days_in_year=365):
     return number_of_days_in_year * (average_inventory_value / cost_of_goods_sold_value)
 
 
@@ -384,18 +403,19 @@ def equity_turnover_ratio(net_sale_value, average_shareholders_equity):
     return net_sale_value / average_shareholders_equity
 
 
-def fixed_asset_turnover(net_sales, average_net_fixed_assets):
-    return net_sales / average_net_fixed_assets
+def fixed_asset_turnover(net_sales_value, average_net_fixed_assets):
+    return net_sales_value / average_net_fixed_assets
 
 
-def inventory_conversion_period(inventory_turnover_ratio, number_of_days_in_year= 365):
+def inventory_conversion_period(inventory_turnover_ratio, number_of_days_in_year=365):
     return number_of_days_in_year / inventory_turnover_ratio
 
 
 def inventory_conversion_ratio(sales, cost_of_goods_sold):
     return (sales * 0.5) / cost_of_goods_sold
 
-def inventory_days(inventory_turnover_value, number_of_days_in_year= 365):
+
+def inventory_days(inventory_turnover_value, number_of_days_in_year=365):
     return number_of_days_in_year / inventory_turnover_value
 
 
@@ -408,10 +428,10 @@ def inventory_turnover(cost_of_goods_sold, average_inventory):
 
 
 def net_asset_growth_rate(final_net_asset_value, initial_net_asset_value):
-    return asset_growth_rate(final_net_asset_value, initial_net_asset_value)
+    return growth_rate(final_net_asset_value, initial_net_asset_value)
 
 
-def payables_conversion_period(accounts_payable, purchases_value, number_of_days_in_year= 365):
+def payables_conversion_period(accounts_payable, purchases_value, number_of_days_in_year=365):
     return (accounts_payable / purchases_value) * number_of_days_in_year
 
 
@@ -419,7 +439,7 @@ def purchases(cost_of_goods_sold, change_in_inventory):
     return cost_of_goods_sold + change_in_inventory
 
 
-def payables_days(purchase_amount, average_accounts_payable, number_of_days_in_year= 365):
+def payables_days(purchase_amount, average_accounts_payable, number_of_days_in_year=365):
     return number_of_days_in_year / payables_turnover(purchase_amount, average_accounts_payable)
 
 
@@ -427,25 +447,32 @@ def payables_turnover(purchase_amount, average_accounts_payable):
     return purchase_amount / average_accounts_payable
 
 
-def receivables_conversion_period(receivables, net_sales, number_of_days_in_year= 365):
-    return (receivables / net_sales) * number_of_days_in_year
+def receivables_conversion_period(receivables, net_sales_value, number_of_days_in_year=365):
+    return (receivables / net_sales_value) * number_of_days_in_year
 
 
-def receivable_turnover(net_sales, average_net_trade_receivables):
-    return net_sales / average_net_trade_receivables
+def receivable_turnover(net_sales_value, average_net_trade_receivables):
+    return net_sales_value / average_net_trade_receivables
 
 
 def receivables_turnover_ratio(net_credit_sales, average_net_receivables):
     return net_credit_sales / average_net_receivables
 
-Sales to Fixed assets
-Sales to total cash
-Sales to total Inventory
 
-def working_capital_turnover(net_sales, average_working_capital):
-    return net_sales / average_working_capital
+def sales_to_fixed_assets(net_sales_value, fixed_assets_value, depreciation=0):
+    return net_sales_value / (fixed_assets_value - depreciation)
 
-Total asset turnover
+
+def sales_to_total_cash(net_sales_value, cash_value):
+    return net_sales_value / cash_value
+
+
+def sales_to_total_inventory(net_sales_value, inventory_value):
+    return net_sales_value / inventory_value
+
+
+def working_capital_turnover(net_sales_value, average_working_capital):
+    return net_sales_value / average_working_capital
 
 
 """
@@ -478,9 +505,9 @@ Total asset turnover
 
 """ profitability """
 
+
 def contribution_margin(revenue, variable_costs):
     return (revenue - variable_costs) / revenue
-
 
 
 def dividends_payout_ratio(cash_dividends_paid_on_common_equity, net_income):
@@ -490,45 +517,63 @@ def dividends_payout_ratio(cash_dividends_paid_on_common_equity, net_income):
 def earnings_per_share(net_income, preferred_dividends, weighted_common_shares_outstanding):
     return (net_income - preferred_dividends) / weighted_common_shares_outstanding
 
-EBITDA Margin Ratio
+
+def ebitda_margin_ratio(ebitda_value, revenue_value):
+    return ebitda_value / revenue_value
 
 
 def gross_profit_margin(gross_profit_value, revenue):
     return gross_profit_value / revenue
 
 
-def gross_margin(net_sales, cost_of_goods_sold):
-    return net_sales - cost_of_goods_sold
+def gross_margin(net_sales_value, cost_of_goods_sold):
+    return net_sales_value - cost_of_goods_sold
 
 
-def gross_profit_margin_on_sales(gross_margin_amount, net_sales):
-    return gross_margin_amount, net_sales
+def gross_profit_margin_on_sales(gross_margin_amount, net_sales_value):
+    return gross_margin_amount, net_sales_value
 
-Growth in equity from plowback
+
+def growth_in_equity_from_plowback(roe_value, plowback_ratio_value):
+    return roe_value * plowback_ratio_value
+
+
 def market_to_book_ratio(market_value_of_equity, book_value_of_equity):
     return market_value_of_equity / book_value_of_equity
-Main business income growth
+
+
+def main_business_income_growth(previous_main_business_income_value, final_main_business_income_value):
+    return (
+                       final_main_business_income_value - previous_main_business_income_value) / previous_main_business_income_value
+
+
 def net_profit_margin(net_income, sales):
     return net_income / sales
 
-Net cash flow of investing activities per share
-def operating_margin(revenue, variable_costs, fixed_costs):
-    return (revenue - variable_costs - fixed_costs) / revenue
 
-Operating Profit Margin
+def net_cash_flow_of_investing_activities_per_share(net_cash_flow_of_investing_activities, number_of_shares):
+    return net_cash_flow_of_investing_activities / number_of_shares
+
+
+def operating_profit_margin(operating_income_value, revenue_value):
+    return operating_income_value / revenue_value
+
+
 def profit_margin(net_profit_value, revenue):
     return net_profit_value / revenue
-Pre taxes income/Sales
 
 
-price to book ratio (P/B)
+def pre_tax_income_to_sales(pre_tax_income_value, sales_value):
+    return pre_tax_income_value / sales_value
 
 
-
+def market_price_to_book_price_ratio(market_price_value, book_price_value):
+    return market_price_value / book_price_value
 
 
 def plowback_ratio(dividends, earnings):
     return 1 - dividends_payout_ratio(dividends, earnings)
+
 
 """ market """
 
@@ -544,15 +589,17 @@ def price_sales_ratio(price_per_share, revenue_per_share):
 def price_earnings_ratio(market_price_of_stock, earnings_per_share_value):
     return market_price_of_stock / earnings_per_share_value
 
-Research & Development Expense to Sales
+
+def research_and_development_expense_to_sales(research_and_development_expense_value, sales_value):
+    return research_and_development_expense_value / sales_value
+
+
 def return_on_assets(net_income, interest, interest_tax_shields, average_total_assets):
     return (net_income + interest - interest_tax_shields) / average_total_assets
 
 
 def return_on_capital_employed(ebit, tax_rate, invested_capital):
     return ebit * (1 - tax_rate) / invested_capital
-
-
 
 
 def risk_adjusted_return_on_capital(expected_return, economic_capital):
@@ -562,17 +609,31 @@ def risk_adjusted_return_on_capital(expected_return, economic_capital):
 def return_on_investment(gain, cost):
     return (gain - cost) / cost
 
+
 def return_on_net_assets(net_income, fixed_assets, working_capital_value):
     return net_income / (fixed_assets + working_capital_value)
 
-Return on sales
+
+def return_on_sales(operating_profit_value, net_sales_value):
+    return operating_profit_value / net_sales_value
+
 
 def return_on_equity(net_income, average_shareholders_equity):
     return net_income / average_shareholders_equity
 
-Sales revenue growth rate
-Sales/Total Assest
-Shareholder equity growth rate
+
+def sales_revenue_growth_rate(final_sales_revenue_value, initial_sales_revenue_value):
+    return growth_rate(final_sales_revenue_value, initial_sales_revenue_value)
+
+
+def sales_to_total_asset(sales_value, total_asset_value):
+    return sales_value / total_asset_value
+
+
+def shareholders_equity_growth_rate(net_income_value, common_stock_dividends, preferred_stock_dividend,
+                                    initial_shareholders_equity_value):
+    return (net_income_value - common_stock_dividends - preferred_stock_dividend) / initial_shareholders_equity_value
+
 
 """
 References

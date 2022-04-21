@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="30739aa5-5212-4d95-b010-eb22caa8d281" name="Changes" comment="formula changes 6">
+    <list default="true" id="30739aa5-5212-4d95-b010-eb22caa8d281" name="Changes" comment="formula changes 7">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/financial_data_creation/fundamental_indicators.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/financial_data_creation/fundamental_indicators.py" afterDir="false" />
     </list>
@@ -107,7 +107,14 @@
       <option name="project" value="LOCAL" />
       <updated>1650353484481</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="formula changes 7">
+      <created>1650475592230</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1650475592230</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -130,6 +137,7 @@
     <MESSAGE value="formula changes 4" />
     <MESSAGE value="formula changes 5" />
     <MESSAGE value="formula changes 6" />
-    <option name="LAST_COMMIT_MESSAGE" value="formula changes 6" />
+    <MESSAGE value="formula changes 7" />
+    <option name="LAST_COMMIT_MESSAGE" value="formula changes 7" />
   </component>
 </project>

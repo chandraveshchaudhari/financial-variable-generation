@@ -182,32 +182,41 @@ class LeverageSolvencyRatios:
 
     def generate_indicators(self, selection="LeverageSolvencyRatios"):
 
-        if selection == "assetsIndicators":
-            return AssetsIndicators(**self.validation_financial_indicator_name_and_value_mapping)
+        if selection.lower() == "assetsIndicators".lower():
+            return AssetsIndicators(**self.validation_financial_indicator_name_and_value_mapping).generate_indicators()
+        if selection.lower() == "CashIndicators".lower():
+            return CashIndicators(**self.validation_financial_indicator_name_and_value_mapping).generate_indicators()
+        if selection.lower() == "DebtIndicators".lower():
+            return DebtIndicators(**self.validation_financial_indicator_name_and_value_mapping).generate_indicators()
+        if selection.lower() == "all".lower():
+            return
 
-        return
-
-
-
+        return None
 
 
 class GrowthIndicators:
     def __init__(self, prefix):
         self.prefix = ""
 
+
 def asset_growth_rate(final_asset_value, initial_asset_value):
     return growth_rate(final_asset_value, initial_asset_value)
+
 
 def operating_leverage_formula(percentage_change_in_operating_income, percentage_change_in_revenue):
     return percentage_change_in_operating_income / percentage_change_in_revenue
 
+
 class AssetsIndicators:
-    parameters = {"asset_liabilities_ratio_name":"asset liabilities ratio",
-                  "capital_expenditures_to_total_assets_name":"capital expenditures to total assets",
-                  "equity_to_fixed_assets_name":"equity to fixed assets", "financial_leverage_name":"financial leverage",
-                  "shareholders_equity_ratio_name":"shareholders equity ratio", "debt_ratio_name":"debt ratio",
-                  "debt_to_assets_name":"debt to assets", "working_capital_to_assets_name":"working capital to assets",
-                  "long_term_funds_to_fixed_assets_name":"long term funds to fixed assets"}
+    parameters = {"asset_liabilities_ratio_name": "asset liabilities ratio",
+                  "capital_expenditures_to_total_assets_name": "capital expenditures to total assets",
+                  "equity_to_fixed_assets_name": "equity to fixed assets",
+                  "financial_leverage_name": "financial leverage",
+                  "shareholders_equity_ratio_name": "shareholders equity ratio",
+                  "debt_ratio_name": "debt ratio",
+                  "debt_to_assets_name": "debt to assets",
+                  "working_capital_to_assets_name": "working capital to assets",
+                  "long_term_funds_to_fixed_assets_name": "long term funds to fixed assets"}
     info = f"""The following variables are needed to create Asset related indicators: \n{parameters}"""
 
     def __init__(self, assets_value=None, fixed_assets_value=None, average_assets=None, shareholders_equity_value=None,
@@ -256,7 +265,6 @@ class AssetsIndicators:
             generated_assets_indicators[self.parameters["long_term_funds_to_fixed_assets_name"]] = self.long_term_funds_to_fixed_assets()
 
         return generated_assets_indicators
-
 
     def asset_liabilities_ratio(self):
         if self.assets_value and self.liabilities_value:
@@ -314,16 +322,16 @@ class AssetsIndicators:
 
 
 class CashIndicators:
-    parameters = {"cash_flow_from_operating_activities_to_interest_name": "cash_flow_from_operating_activities_to_interest_name",
-                  "cash_flow_from_operating_activities_to_debt_name": "cash_flow_from_operating_activities_to_debt_name",
-                  "cash_coverage_ratio_name": "cash_coverage_ratio_name",
-                  "interest_coverage_formula_or_times_interest_earned_name": "interest_coverage_formula_or_times_interest_earned_name",
-                  "cash_debt_coverage_ratio_name": "cash_debt_coverage_ratio_name",
-                  "operating_cash_flow_ratio_name": "operating_cash_flow_ratio_name",
-                  "operating_cash_flow_to_liabilities_ratio_name": "operating_cash_flow_to_liabilities_ratio_name",
-                  "operating_cash_flow_to_net_profit_ratio_name": "operating_cash_flow_to_net_profit_ratio_name",
-                  "operating_cash_net_flow_to_sales_revenue_ratio_name": "operating_cash_net_flow_to_sales_revenue_ratio_name",
-                  "operating_income_to_total_assets_name":"operating_income_to_total_assets_name"}
+    parameters = {"cash_flow_from_operating_activities_to_interest_name": "cash flow from operating activities to interest",
+                  "cash_flow_from_operating_activities_to_debt_name": "cash flow from operating activities to debt",
+                  "cash_coverage_ratio_name": "cash coverage ratio",
+                  "interest_coverage_formula_or_times_interest_earned_name": "interest coverage formula or times interest earned",
+                  "cash_debt_coverage_ratio_name": "cash debt coverage ratio",
+                  "operating_cash_flow_ratio_name": "operating cash flow ratio",
+                  "operating_cash_flow_to_liabilities_ratio_name": "operating cash flow to liabilities ratio",
+                  "operating_cash_flow_to_net_profit_ratio_name": "operating cash flow to net profit ratio",
+                  "operating_cash_net_flow_to_sales_revenue_ratio_name": "operating cash net flow to sales revenue ratio",
+                  "operating_income_to_total_assets_name":"operating income to total assets"}
     info = f"""The following variables are needed to create cash related indicators: \n{parameters}"""
 
     def __init__(self, cash_flow_from_operating_activities, interest, interest_expense_value, liabilities_value,
@@ -343,7 +351,6 @@ class CashIndicators:
         self.sales_revenue_value = sales_revenue_value
         self.assets_value = assets_value
         self.operating_income_value = operating_income_value
-
 
     def generate_indicators(self):
         generated_cash_indicators = dict()
@@ -378,8 +385,6 @@ class CashIndicators:
             generated_cash_indicators[self.parameters["operating_income_to_total_assets_name"]] = self.operating_income_to_total_assets()
 
         return generated_cash_indicators
-
-
 
     def cash_flow_from_operating_activities_to_interest(self):
         if self.cash_flow_from_operating_activities and self.interest and self.taxes_paid_in_cash and self.interest_expense_value:
@@ -444,14 +449,13 @@ class CashIndicators:
 
 class DebtIndicators:
     parameters = {
-        "cash_flow_from_operating_activities_to_interest_name": "cash_flow_from_operating_activities_to_interest",
-        "capital_expenditures_to_total_assets_name": "capital expenditures to total assets",
-        "equity_to_fixed_assets_name": "equity to fixed assets",
-        "financial_leverage_name": "financial leverage",
-        "shareholders_equity_ratio_name": "shareholders equity ratio", "debt_ratio_name": "debt ratio",
-        "debt_to_assets_name": "debt to assets",
-        "working_capital_to_assets_name": "working capital to assets",
-        "long_term_funds_to_fixed_assets_name": "long term funds to fixed assets"}
+        "debt_to_equity_name": "debt to equity",
+        "debt_equity_ratio_name": "debt equity ratio",
+        "debt_ratio_name": "debt ratio",
+        "debt_service_coverage_ratio_name": "debt service coverage ratio",
+        "long_term_debt_ratio_name": "long term debt ratio",
+        "long_term_debt_equity_ratio_name": "long term debt equity ratio",
+        "long_term_liabilities_to_shareholders_equity_name": "long term liabilities to shareholders equity"}
     info = f"""The following variables are needed to create debt related indicators: \n{parameters}"""
 
     def __init__(self, debt_value, long_term_debt, total_debt_service, shareholders_equity_value, liabilities_value,
@@ -468,59 +472,74 @@ class DebtIndicators:
     def generate_indicators(self):
         generated_cash_indicators = dict()
 
-        if self.debt_coverage_ratio():
-            generated_cash_indicators[self.parameters[""]] = self.
+        if self.debt_to_equity():
+            generated_cash_indicators[self.parameters["debt_to_equity_name"]] = self.debt_to_equity()
 
-        if:
-            generated_cash_indicators[self.parameters[""]] = self.
+        if self.debt_equity_ratio():
+            generated_cash_indicators[self.parameters["debt_equity_ratio_name"]] = self.debt_equity_ratio()
 
-        if:
-            generated_cash_indicators[self.parameters[""]] = self.
+        if self.debt_ratio():
+            generated_cash_indicators[self.parameters["debt_ratio_name"]] = self.debt_ratio()
 
-        if:
-            generated_cash_indicators[self.parameters[""]] = self.
+        if self.debt_service_coverage_ratio():
+            generated_cash_indicators[self.parameters["debt_service_coverage_ratio_name"]] = self.debt_service_coverage_ratio()
 
-        if:
-            generated_cash_indicators[self.parameters[""]] = self.
+        if self.long_term_debt_ratio():
+            generated_cash_indicators[self.parameters["long_term_debt_ratio_name"]] = self.long_term_debt_ratio()
 
-        if:
-            generated_cash_indicators[self.parameters[""]] = self.
+        if self.long_term_debt_equity_ratio():
+            generated_cash_indicators[self.parameters["long_term_debt_equity_ratio_name"]] = self.long_term_debt_equity_ratio()
 
-        if:
-            generated_cash_indicators[self.parameters[""]] = self.
+        if self.long_term_liabilities_to_shareholders_equity():
+            generated_cash_indicators[self.parameters["long_term_liabilities_to_shareholders_equity_name"]] = self.long_term_liabilities_to_shareholders_equity()
 
         return generated_cash_indicators
 
     def debt_to_equity(self):
-        return self.debt_value / self.shareholders_equity_value
+        if self.debt_value and self.shareholders_equity_value:
+            assert self.shareholders_equity_value != 0
+            return self.debt_value / self.shareholders_equity_value
+        return None
 
     def debt_equity_ratio(self):
-        return self.long_term_debt / self.shareholders_equity_value
+        if self.long_term_debt and self.shareholders_equity_value:
+            assert self.shareholders_equity_value != 0
+            return self.long_term_debt / self.shareholders_equity_value
+        return None
 
     def debt_ratio(self):
-        return self.liabilities_value / self.assets_value
+        if self.liabilities_value and self.assets_value:
+            assert self.assets_value != 0
+            return self.liabilities_value / self.assets_value
+        return None
 
     def debt_service_coverage_ratio(self):
-        return self.net_operating_income / self.total_debt_service
+        if self.net_operating_income and self.total_debt_service:
+            assert self.total_debt_service != 0
+            return self.net_operating_income / self.total_debt_service
+        return None
 
     def long_term_debt_ratio(self):
-        return self.long_term_debt / (self.long_term_debt + self.shareholders_equity_value)
+        if self.long_term_debt and self.long_term_debt and self.shareholders_equity_value:
+            assert (self.long_term_debt + self.shareholders_equity_value) != 0
+            return self.long_term_debt / (self.long_term_debt + self.shareholders_equity_value)
+        return None
 
     def long_term_debt_equity_ratio(self):
-        return self.long_term_liabilities / self.shareholders_equity_value
+        if self.long_term_liabilities and self.shareholders_equity_value:
+            assert self.shareholders_equity_value != 0
+            return self.long_term_liabilities / self.shareholders_equity_value
+        return None
 
     def long_term_liabilities_to_shareholders_equity(self):
-        return self.long_term_liabilities / self.shareholders_equity_value
-
-
-
+        if self.long_term_liabilities and self.shareholders_equity_value:
+            assert self.shareholders_equity_value != 0
+            return self.long_term_liabilities / self.shareholders_equity_value
+        return None
 
 
 def degree_of_operating_leverage(contribution_margin_value, operating_margin_value):
     return contribution_margin_value / operating_margin_value
-
-
-
 
 
 """
@@ -532,6 +551,7 @@ def degree_of_operating_leverage(contribution_margin_value, operating_margin_val
 """
 """ liquidity """
 class LiquidityRatios:
+    pass
 
 def cash_ratio(cash, marketable_securities, current_liabilities):
     return (cash + marketable_securities) / current_liabilities
@@ -588,6 +608,7 @@ def quick_or_acid_test_ratio(cash, marketable_securities, receivables, current_l
 """
 
 class EfficiencyRatios:
+    pass
 
 def accounts_receivable_days_or_collection_period(accounts_receivable_value, revenue, number_of_days_in_year=365):
     return (accounts_receivable_value / revenue) * number_of_days_in_year
@@ -750,7 +771,11 @@ def working_capital_turnover(net_sales_value, average_working_capital):
 """
 
 """ profitability """
+
+
 class ProfitabilityRatios:
+    pass
+
 
 def contribution_margin(revenue, variable_costs):
     return (revenue - variable_costs) / revenue

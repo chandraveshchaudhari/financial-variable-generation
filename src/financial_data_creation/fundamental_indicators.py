@@ -163,21 +163,21 @@ def calc_earnings_per_share(net_earnings, number_of_shares):
 
 
 def validation(financial_indicator_name_and_value_mapping):
-    assert bool(financial_indicator_name_and_value_mapping)
+    assert bool(financial_indicator_name_and_value_mapping), "financial_indicator_name_and_value_mapping is empty"
 
     validated_financial_indicator_name_and_value_mapping, invalidated_financial_indicator_name_and_value_mapping = dict() , dict()
     for financial_name, financial_value in financial_indicator_name_and_value_mapping.items():
-        if type(financial_value) is not int or type(financial_value) is not float:
+        if not type(financial_value) in (int, float):
             print(f"{financial_value} is not int or float")
-            invalidated_financial_indicator_name_and_value_mapping += {financial_name: financial_value}
+            invalidated_financial_indicator_name_and_value_mapping.update({financial_name: financial_value})
         else:
-            validated_financial_indicator_name_and_value_mapping += {financial_name: financial_value}
+            validated_financial_indicator_name_and_value_mapping.update({financial_name: financial_value})
     return validated_financial_indicator_name_and_value_mapping, invalidated_financial_indicator_name_and_value_mapping
 
 
 class LeverageSolvencyRatios:
-    def __init__(self, financial_indicator_name_and_value_mapping):
-        self.financial_indicator_name_and_value_mapping = financial_indicator_name_and_value_mapping
+    def __init__(self, **kwargs):
+        self.financial_indicator_name_and_value_mapping = kwargs
         self.validation_financial_indicator_name_and_value_mapping = validation(self.financial_indicator_name_and_value_mapping)[0]
 
     def generate_indicators(self, selection="LeverageSolvencyRatios"):
@@ -188,15 +188,23 @@ class LeverageSolvencyRatios:
             return CashIndicators(**self.validation_financial_indicator_name_and_value_mapping).generate_indicators()
         if selection.lower() == "DebtIndicators".lower():
             return DebtIndicators(**self.validation_financial_indicator_name_and_value_mapping).generate_indicators()
-        if selection.lower() == "all".lower():
-            return
+        if selection.lower() == "LeverageSolvencyRatios".lower():
+            leverage_solvency_ratios_dict = dict()
+            if AssetsIndicators(**self.validation_financial_indicator_name_and_value_mapping).generate_indicators():
+                leverage_solvency_ratios_dict = {**AssetsIndicators(**self.validation_financial_indicator_name_and_value_mapping).generate_indicators()}
+            if CashIndicators(**self.validation_financial_indicator_name_and_value_mapping).generate_indicators():
+                leverage_solvency_ratios_dict = {**CashIndicators(**self.validation_financial_indicator_name_and_value_mapping).generate_indicators()}
+            if DebtIndicators(**self.validation_financial_indicator_name_and_value_mapping).generate_indicators():
+                leverage_solvency_ratios_dict = {**DebtIndicators(**self.validation_financial_indicator_name_and_value_mapping).generate_indicators()}
+            if leverage_solvency_ratios_dict:
+                return leverage_solvency_ratios_dict
 
         return None
 
 
 class GrowthIndicators:
-    def __init__(self, prefix):
-        self.prefix = ""
+    def __init__(self, prefix=""):
+        self.prefix = prefix
 
 
 def asset_growth_rate(final_asset_value, initial_asset_value):
@@ -205,6 +213,10 @@ def asset_growth_rate(final_asset_value, initial_asset_value):
 
 def operating_leverage_formula(percentage_change_in_operating_income, percentage_change_in_revenue):
     return percentage_change_in_operating_income / percentage_change_in_revenue
+
+
+def degree_of_operating_leverage(contribution_margin_value, operating_margin_value):
+    return contribution_margin_value / operating_margin_value
 
 
 class AssetsIndicators:
@@ -334,9 +346,10 @@ class CashIndicators:
                   "operating_income_to_total_assets_name":"operating income to total assets"}
     info = f"""The following variables are needed to create cash related indicators: \n{parameters}"""
 
-    def __init__(self, cash_flow_from_operating_activities, interest, interest_expense_value, liabilities_value,
-                 taxes_paid_in_cash, average_total_liabilities, ebit_value, depreciation, current_liabilities,
-                 net_profit_value, operating_cash_net_flow, sales_revenue_value, assets_value, operating_income_value):
+    def __init__(self, cash_flow_from_operating_activities=None, interest=None, interest_expense_value=None,
+                 liabilities_value=None, taxes_paid_in_cash=None, average_total_liabilities=None, ebit_value=None,
+                 depreciation=None, current_liabilities=None, net_profit_value=None, operating_cash_net_flow=None,
+                 sales_revenue_value=None, assets_value=None, operating_income_value=None, **kwargs):
         self.interest_expense_value = interest_expense_value
         self.cash_flow_from_operating_activities = cash_flow_from_operating_activities
         self.interest = interest
@@ -458,8 +471,8 @@ class DebtIndicators:
         "long_term_liabilities_to_shareholders_equity_name": "long term liabilities to shareholders equity"}
     info = f"""The following variables are needed to create debt related indicators: \n{parameters}"""
 
-    def __init__(self, debt_value, long_term_debt, total_debt_service, shareholders_equity_value, liabilities_value,
-                 assets_value, net_operating_income, long_term_liabilities):
+    def __init__(self, debt_value=None, long_term_debt=None, total_debt_service=None, shareholders_equity_value=None,
+                 liabilities_value=None, assets_value=None, net_operating_income=None, long_term_liabilities=None, **kwargs):
         self.long_term_liabilities = long_term_liabilities
         self.net_operating_income = net_operating_income
         self.liabilities_value = liabilities_value
@@ -538,10 +551,6 @@ class DebtIndicators:
         return None
 
 
-def degree_of_operating_leverage(contribution_margin_value, operating_margin_value):
-    return contribution_margin_value / operating_margin_value
-
-
 """
 ##### Liquidity ratios
 - Cash ratio 
@@ -550,31 +559,88 @@ def degree_of_operating_leverage(contribution_margin_value, operating_margin_val
 - Quick ratio
 """
 """ liquidity """
+
+
 class LiquidityRatios:
-    pass
+    parameters = {
+        "cash_ratio_name": "cash ratio",
+        "cash_flow_from_operating_activities_ratio_name": "cash flow from operating activities ratio",
+        "current_ratio_name": "current ratio name",
+        "interval_measure_name": "interval measure name",
+        "net_working_capital_to_total_assets_ratio_name": "net working capital to total assets ratio",
+        "quick_or_acid_test_ratio_name": "quick or acid test ratio"}
+    info = f"""The following variables are needed to create liquidity related indicators: \n{parameters}"""
 
-def cash_ratio(cash, marketable_securities, current_liabilities):
-    return (cash + marketable_securities) / current_liabilities
+    def __init__(self, cash, marketable_securities, current_liabilities, cash_flow_from_operating_activities, 
+                 average_current_liabilities, current_assets, receivables, average_daily_expenditures_from_operation,
+                 net_working_capital, assets_value):
+        self.assets_value = assets_value
+        self.net_working_capital = net_working_capital
+        self.average_daily_expenditures_from_operation = average_daily_expenditures_from_operation
+        self.receivables = receivables
+        self.current_assets = current_assets
+        self.average_current_liabilities = average_current_liabilities
+        self.cash_flow_from_operating_activities = cash_flow_from_operating_activities
+        self.current_liabilities = current_liabilities
+        self.marketable_securities = marketable_securities
+        self.cash = cash
 
+    def generate_indicators(self):
+        generated_cash_indicators = dict()
 
-def cash_flow_from_operating_activities_ratio(cash_flow_from_operating_activities, average_current_liabilities):
-    return cash_flow_from_operating_activities / average_current_liabilities
+        if self.cash_ratio():
+            generated_cash_indicators[self.parameters["cash_ratio_name"]] = self.cash_ratio()
 
+        if self.cash_flow_from_operating_activities_ratio():
+            generated_cash_indicators[self.parameters["cash_flow_from_operating_activities_ratio_name"]] = self.cash_flow_from_operating_activities_ratio()
 
-def current_ratio(current_assets, current_liabilities):
-    return current_assets / current_liabilities
+        if self.current_ratio():
+            generated_cash_indicators[self.parameters["current_ratio_name"]] = self.current_ratio()
 
+        if self.interval_measure():
+            generated_cash_indicators[self.parameters["interval_measure_name"]] = self.interval_measure()
 
-def interval_measure(cash, marketable_securities, receivables, average_daily_expenditures_from_operation):
-    return (cash + marketable_securities + receivables) / average_daily_expenditures_from_operation
+        if self.net_working_capital_to_total_assets_ratio():
+            generated_cash_indicators[self.parameters["net_working_capital_to_total_assets_ratio_name"]] = self.net_working_capital_to_total_assets_ratio()
 
+        if self.quick_or_acid_test_ratio():
+            generated_cash_indicators[self.parameters["quick_or_acid_test_ratio_name"]] = self.quick_or_acid_test_ratio()
 
-def net_working_capital_to_total_assets_ratio(net_working_capital, total_assets):
-    return net_working_capital / total_assets
+    def cash_ratio(self):
+        if self.cash and self.marketable_securities and self.current_liabilities:
+            assert self.current_liabilities != 0
+            return (self.cash + self.marketable_securities) / self.current_liabilities
+        return None
 
+    def cash_flow_from_operating_activities_ratio(self):
+        if self.cash_flow_from_operating_activities and self.average_current_liabilities:
+            assert self.average_current_liabilities != 0
+            return self.cash_flow_from_operating_activities / self.average_current_liabilities
+        return None
 
-def quick_or_acid_test_ratio(cash, marketable_securities, receivables, current_liabilities):
-    return (cash + marketable_securities + receivables) / current_liabilities
+    def current_ratio(self):
+        if self.current_assets and self.current_liabilities:
+            assert self.current_liabilities != 0
+            return self.current_assets / self.current_liabilities
+        return None
+
+    def interval_measure(self):
+        if self.cash and self.marketable_securities and self.receivables and self.average_daily_expenditures_from_operation:
+            assert self.average_daily_expenditures_from_operation != 0
+            return (self.cash + self.marketable_securities + self.receivables) / self.average_daily_expenditures_from_operation
+        return None
+
+    def net_working_capital_to_total_assets_ratio(self):
+        if self.net_working_capital and self.assets_value:
+            assert self.assets_value != 0
+            return self.net_working_capital / self.assets_value
+        return None
+
+    def quick_or_acid_test_ratio(self):
+        if self.cash and self.marketable_securities and self.receivables and self.current_liabilities:
+            assert self.current_liabilities != 0
+            return (self.cash + self.marketable_securities + self.receivables) / self.current_liabilities
+        return None
 
 
 """
@@ -674,6 +740,10 @@ def fixed_asset_turnover(net_sales_value, average_net_fixed_assets):
     return net_sales_value / average_net_fixed_assets
 
 
+class InventoryRatios:
+    pass
+
+
 def inventory_conversion_period(inventory_turnover_ratio, number_of_days_in_year=365):
     return number_of_days_in_year / inventory_turnover_ratio
 
@@ -698,6 +768,10 @@ def net_asset_growth_rate(final_net_asset_value, initial_net_asset_value):
     return growth_rate(final_net_asset_value, initial_net_asset_value)
 
 
+class PurchasesRatios:
+    pass
+
+
 def payables_conversion_period(accounts_payable, purchases_value, number_of_days_in_year=365):
     return (accounts_payable / purchases_value) * number_of_days_in_year
 
@@ -712,6 +786,10 @@ def payables_days(purchase_amount, average_accounts_payable, number_of_days_in_y
 
 def payables_turnover(purchase_amount, average_accounts_payable):
     return purchase_amount / average_accounts_payable
+
+
+class SalesRatios:
+    pass
 
 
 def receivables_conversion_period(receivables, net_sales_value, number_of_days_in_year=365):

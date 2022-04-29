@@ -1,4 +1,3 @@
-output_data = dict()
 
 import inspect
 
@@ -11,7 +10,6 @@ def validate_availability(data):
 
 
 def validate_input_data(financial_indicator_name_and_value_mapping):
-
     validated_financial_indicator_name_and_value_mapping, invalidated_financial_indicator_name_and_value_mapping = dict(), dict()
     for financial_name, financial_value in financial_indicator_name_and_value_mapping.items():
         if not type(financial_value) in (int, float):
@@ -30,99 +28,118 @@ def exception_handling_division_by_zero(function):
         return None
 
 
-# Parameters related
-def get_functions_name_and_details(module):
-    return inspect.getmembers(module, inspect.isfunction)
+class ModuleFunctions:
+    def __init__(self, module, input_data=None):
 
+        self.module = module
+        self.data = validate_input_data(input_data)[0]
 
-def create_function_parameter_mapping(module):
+    # Parameters related
+    def get_functions_name_and_details(self):
+        return inspect.getmembers(self.module, inspect.isfunction)
 
-    functions_name_and_details = get_functions_name_and_details(module)
-    function_parameter_mapping = dict()
+    def create_function_parameter_mapping(self):
+        """Future features: this will create mapping based on all, profitability, liquidity, efficiency ratios
 
-    for function in functions_name_and_details:
-        argument_counts = function[1].__code__.co_argcount if function[1].__code__.co_argcount else 0
-        default_counts = len(function[1].__defaults__) if function[1].__defaults__ else 0
-        non_default_count = argument_counts - default_counts
-        parameter_list = [function[1].__code__.co_varnames[:non_default_count],
-                          function[1].__code__.co_varnames[non_default_count:]]
-        function_parameter_mapping[function[0]] = parameter_list
+        Returns
+        -------
 
-    return function_parameter_mapping
+        """
 
+        functions_name_and_details = self.get_functions_name_and_details()
+        function_parameter_mapping = dict()
 
-def function_name_string_function_object_mapping(module):
-    name_and_function_dict = dict()
-    functions_name_and_details = get_functions_name_and_details(module)
-    for function_detail in functions_name_and_details:
-        name_and_function_dict[function_detail[0]] = function_detail[1]
+        for function in functions_name_and_details:
+            argument_counts = function[1].__code__.co_argcount if function[1].__code__.co_argcount else 0
+            default_counts = len(function[1].__defaults__) if function[1].__defaults__ else 0
+            non_default_count = argument_counts - default_counts
+            parameter_list = [function[1].__code__.co_varnames[:non_default_count],
+                              function[1].__code__.co_varnames[non_default_count:]]
+            function_parameter_mapping[function[0]] = parameter_list
 
-    return name_and_function_dict
+        return function_parameter_mapping
 
+    def function_name_string_function_object_mapping(self):
+        name_and_function_dict = dict()
+        functions_name_and_details = self.get_functions_name_and_details()
+        for function_detail in functions_name_and_details:
+            name_and_function_dict[function_detail[0]] = function_detail[1]
 
-def get_formula_based_on_name_string(formula_name, module):
-    return get_functions_name_and_details(module)[formula_name]
+        return name_and_function_dict
+
+    def get_formula_based_on_name_string(self, formula_name):
+        return self.function_name_string_function_object_mapping()[formula_name]
+
+    def formula_executor(self, formula_name, data):
+
+        function_and_parameters = self.create_function_parameter_mapping()[formula_name]
+        parameters = ParameterMatcher(data, function_and_parameters[formula_name]).parameters()
+
+        variable_value = self.get_formula_based_on_name_string(formula_name)(**parameters)
+        variable_name = f"{formula_name}_value"
+
+        return {variable_name: variable_value}
+
+    def data_generator(self):
+        """Future features: this will create mapping based on all, profitability, liquidity, efficiency ratios
+
+        Returns
+        -------
+
+        """
+        data = self.data
+        function_parameter_dict = self.create_function_parameter_mapping()
+
+        while True:
+            formulas_tried = 0
+            for formula_name, parameters in function_parameter_dict.items():
+
+                if ParameterMatcher(data, parameters).status():
+                    generated_name_value = self.formula_executor(formula_name, data)
+                    data.update(generated_name_value)
+                    del function_parameter_dict[formula_name]
+                    break
+                formulas_tried += 1
+
+            if formulas_tried == len(function_parameter_dict):
+                return data
 
 
 def membership_checker(item, data_structure):
     return True if item in data_structure else False
 
 
-def input_data_parameters_matcher(data, parameters, default_parameters_check=True):
+class ParameterMatcher:
+    def __init__(self, data, parameters):
+        self.parameters = parameters
+        self.data = data
 
-    for variable in parameters:
-        if default_parameters_check:
+    def status(self, default_parameters_check=True):
+        for variable in self.parameters:
+            if default_parameters_check:
+                for default_variable in variable[1]:
+                    if not membership_checker(default_variable, self.data):
+                        print(
+                            f"{default_variable} is not provided, data_generator will use default value in formula function")
+
+            for var in variable[0]:
+                if not membership_checker(var, self.data):
+                    return False
+
+        return True
+
+    def parameters(self):
+        parameters_dict = dict()
+        for variable in self.parameters:
+
+            for var in variable[0]:
+                if membership_checker(var, self.data):
+                    parameters_dict[var] = self.data[var]
+
             for default_variable in variable[1]:
-                if not membership_checker(default_variable, data):
-                    print(f"{default_variable} is not provided, data_generator will use default value in formula function")
-
-        for var in variable[0]:
-            if not membership_checker(var, data):
-                return False
-
-    return True
-
-
-def run_formula(formula, input_data):
-    return formula(input_data)
-
-
-def data_update():
-    pass
-
-
-# Indicators Generator
-def remove_entry_from_function_parameter_mapping_data():
-    pass
-
-
-def formula_executor(formula_name, data, functions_name_and_details):
-
-
-    return {variable_name: variable_value}
-
-
-def data_generator(input_data, function_parameter_mapping_data):
-    data = input_data
-
-    while True:
-        formulas_tried = 0
-        for formula_name, parameters in function_parameter_mapping_data.items():
-
-            update_flag = False
-            if input_data_parameters_matcher(data, parameters):
-                generated_name_value = formula_executor(formula_name, data)
-                update_flag = data_update(data, generated_name_value)
-                remove_entry_from_function_parameter_mapping_data()
-            if update_flag:
-                break
-            formulas_tried += 1
-
-        if formulas_tried == len(function_parameter_mapping_data):
-            return data
-
-
-# Look out observer and parameter cache
+                if membership_checker(default_variable, self.data):
+                    parameters_dict[default_variable] = self.data[default_variable]
+        return parameters_dict
 
 
 if __name__ == '__main__':

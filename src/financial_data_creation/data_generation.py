@@ -19,10 +19,9 @@ def validate_input_data(financial_indicator_name_and_value_mapping):
     return validated_financial_indicator_name_and_value_mapping, invalidated_financial_indicator_name_and_value_mapping
 
 
-# Division by zero
-def exception_handling_division_by_zero(function):
+def exception_handling_division_by_zero(function, **kwargs):
     try:
-        return function()
+        return function(**kwargs)
     except ZeroDivisionError:
         return None
 
@@ -71,10 +70,11 @@ class ModuleFunctions:
 
     def formula_executor(self, formula_name, data):
 
-        function_and_parameters = self.create_function_parameter_mapping()[formula_name]
-        parameters = ParameterMatcher(data, function_and_parameters[formula_name]).parameters()
+        function_and_parameters = self.create_function_parameter_mapping()
+        parameters = ParameterMatcher(data, function_and_parameters[formula_name]).parameter()
 
-        variable_value = exception_handling_division_by_zero(self.get_formula_based_on_name_string(formula_name)(**parameters))
+        variable_value = exception_handling_division_by_zero(self.get_formula_based_on_name_string(formula_name),
+                                                             **parameters)
         if not variable_value:
             return None
         variable_name = f"{formula_name}_value"
@@ -119,30 +119,29 @@ class ParameterMatcher:
         self.data = data
 
     def status(self, default_parameters_check=True):
-        for variable in self.parameters:
-            if default_parameters_check:
-                for default_variable in variable[1]:
-                    if not membership_checker(default_variable, self.data):
-                        print(
-                            f"{default_variable} is not provided, data_generator will use default value in formula function")
 
-            for var in variable[0]:
-                if not membership_checker(var, self.data):
-                    return False
+        if default_parameters_check:
+            for default_variable in self.parameters[1]:
+                if not membership_checker(default_variable, self.data):
+                    print(
+                        f"{default_variable} is not provided, data_generator will use default value in formula function")
+
+        for var in self.parameters[0]:
+            if not membership_checker(var, self.data):
+                return False
 
         return True
 
-    def parameters(self):
+    def parameter(self):
         parameters_dict = dict()
-        for variable in self.parameters:
 
-            for var in variable[0]:
-                if membership_checker(var, self.data):
-                    parameters_dict[var] = self.data[var]
+        for var in self.parameters[0]:
+            if membership_checker(var, self.data):
+                parameters_dict[var] = self.data[var]
 
-            for default_variable in variable[1]:
-                if membership_checker(default_variable, self.data):
-                    parameters_dict[default_variable] = self.data[default_variable]
+        for default_variable in self.parameters[1]:
+            if membership_checker(default_variable, self.data):
+                parameters_dict[default_variable] = self.data[default_variable]
         return parameters_dict
 
 

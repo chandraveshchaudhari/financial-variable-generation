@@ -33,8 +33,26 @@ class ModuleFunctions:
         self.data = validate_input_data(input_data)[0]
 
     # Parameters related
-    def get_functions_name_and_details(self):
+    def get_list_of_tuples_of_functions_name_and_function_object(self):
         return inspect.getmembers(self.module, inspect.isfunction)
+
+    def function_names_set(self):
+        list_of_tuples_of_functions_name_and_function_object = self.get_list_of_tuples_of_functions_name_and_function_object()
+        function_name_set = set()
+
+        for tuples_of_functions_name_and_function_object in list_of_tuples_of_functions_name_and_function_object:
+            function_name_set.update(tuples_of_functions_name_and_function_object[0])
+
+        return function_name_set
+
+    def parameter_set(self):
+        list_of_tuples_of_functions_name_and_function_object = self.get_list_of_tuples_of_functions_name_and_function_object()
+        parameters_set = set()
+
+        for tuples_of_functions_name_and_function_object in list_of_tuples_of_functions_name_and_function_object:
+            parameters_set.update(tuples_of_functions_name_and_function_object[1].__code__.co_varnames)
+
+        return parameters_set
 
     def create_function_parameter_mapping(self):
         """Future features: this will create mapping based on all, profitability, liquidity, efficiency ratios
@@ -44,10 +62,10 @@ class ModuleFunctions:
 
         """
 
-        functions_name_and_details = self.get_functions_name_and_details()
+        list_of_tuples_of_functions_name_and_function_object = self.get_list_of_tuples_of_functions_name_and_function_object()
         function_parameter_mapping = dict()
 
-        for function in functions_name_and_details:
+        for function in list_of_tuples_of_functions_name_and_function_object:
             argument_counts = function[1].__code__.co_argcount if function[1].__code__.co_argcount else 0
             default_counts = len(function[1].__defaults__) if function[1].__defaults__ else 0
             non_default_count = argument_counts - default_counts
@@ -59,8 +77,8 @@ class ModuleFunctions:
 
     def function_name_string_function_object_mapping(self):
         name_and_function_dict = dict()
-        functions_name_and_details = self.get_functions_name_and_details()
-        for function_detail in functions_name_and_details:
+        list_of_tuples_of_functions_name_and_function_object = self.get_list_of_tuples_of_functions_name_and_function_object()
+        for function_detail in list_of_tuples_of_functions_name_and_function_object:
             name_and_function_dict[function_detail[0]] = function_detail[1]
 
         return name_and_function_dict
@@ -145,6 +163,19 @@ class ParameterMatcher:
         return parameters_dict
 
 
-def data_creation(input_data, type_of_data="fundamental_data"):
-    if type_of_data.lower() == "fundamental_data":
-        return ModuleFunctions(fundamental_indicators_formulas, input_data).data_generator()
+class DataCreation:
+    def __init__(self, input_data=None, type_of_data="fundamental_data"):
+        self.type_of_data = type_of_data
+        self.input_data = input_data
+
+    def generate(self):
+        if self.type_of_data.lower() == "fundamental_data":
+            return ModuleFunctions(fundamental_indicators_formulas, self.input_data).data_generator()
+
+    def function_names_set(self):
+        if self.type_of_data.lower() == "fundamental_data":
+            return ModuleFunctions(fundamental_indicators_formulas).function_names_set()
+
+    def parameter_set(self):
+        if self.type_of_data.lower() == "fundamental_data":
+            return ModuleFunctions(fundamental_indicators_formulas).parameter_set()

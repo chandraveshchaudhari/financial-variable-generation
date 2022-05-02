@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="30739aa5-5212-4d95-b010-eb22caa8d281" name="Changes" comment="parameters with &quot;&quot;_value format">
+    <list default="true" id="30739aa5-5212-4d95-b010-eb22caa8d281" name="Changes" comment="created DataCreation class for generating data and info">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/financial_data_creation/data_generation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/financial_data_creation/data_generation.py" afterDir="false" />
     </list>
@@ -205,7 +205,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651486945582</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="created DataCreation class for generating data and info">
+      <created>1651490827996</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1651490827996</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -237,10 +244,38 @@
     <MESSAGE value="exception handling function" />
     <MESSAGE value="tested" />
     <MESSAGE value="parameters with &quot;&quot;_value format" />
-    <option name="LAST_COMMIT_MESSAGE" value="parameters with &quot;&quot;_value format" />
+    <MESSAGE value="created DataCreation class for generating data and info" />
+    <option name="LAST_COMMIT_MESSAGE" value="created DataCreation class for generating data and info" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/financial_data_creation/data_generation.py</url>
+          <line>186</line>
+          <option name="timeStamp" value="22" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/financial_data_creation/data_generation.py</url>
+          <line>42</line>
+          <option name="timeStamp" value="23" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/financial_data_creation/data_generation.py</url>
+          <line>43</line>
+          <option name="timeStamp" value="24" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/financial_data_creation/data_generation.py</url>
+          <line>44</line>
+          <option name="timeStamp" value="25" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/src/financial_data_creation/data_generation.py</url>
+          <line>39</line>
+          <option name="timeStamp" value="26" />
+        </line-breakpoint>
+      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">

@@ -30,7 +30,7 @@ class ModuleFunctions:
     def __init__(self, module, input_data=None):
 
         self.module = module
-        self.data = validate_input_data(input_data)[0]
+        self.data = validate_input_data(input_data)[0] if input_data else None
 
     # Parameters related
     def get_list_of_tuples_of_functions_name_and_function_object(self):
@@ -41,7 +41,8 @@ class ModuleFunctions:
         function_name_set = set()
 
         for tuples_of_functions_name_and_function_object in list_of_tuples_of_functions_name_and_function_object:
-            function_name_set.update(tuples_of_functions_name_and_function_object[0])
+            function_name = tuples_of_functions_name_and_function_object[0]
+            function_name_set.add(function_name)
 
         return function_name_set
 
@@ -50,7 +51,8 @@ class ModuleFunctions:
         parameters_set = set()
 
         for tuples_of_functions_name_and_function_object in list_of_tuples_of_functions_name_and_function_object:
-            parameters_set.update(tuples_of_functions_name_and_function_object[1].__code__.co_varnames)
+            for parameter_name in tuples_of_functions_name_and_function_object[1].__code__.co_varnames:
+                parameters_set.add(parameter_name)
 
         return parameters_set
 
@@ -179,3 +181,7 @@ class DataCreation:
     def parameter_set(self):
         if self.type_of_data.lower() == "fundamental_data":
             return ModuleFunctions(fundamental_indicators_formulas).parameter_set()
+
+
+if __name__ == "__main__":
+    pass

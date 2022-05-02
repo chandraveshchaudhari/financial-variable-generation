@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="30739aa5-5212-4d95-b010-eb22caa8d281" name="Changes" comment="exception handling function">
+    <list default="true" id="30739aa5-5212-4d95-b010-eb22caa8d281" name="Changes" comment="tested">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/financial_data_creation/data_generation.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/financial_data_creation/data_generation.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/financial_data_creation/fundamental_indicators_formulas.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/financial_data_creation/fundamental_indicators_formulas.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -191,7 +191,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651469416199</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="tested">
+      <created>1651474949925</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1651474949925</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -221,42 +228,11 @@
     <MESSAGE value="design change 1" />
     <MESSAGE value="work finished till exception handling" />
     <MESSAGE value="exception handling function" />
-    <option name="LAST_COMMIT_MESSAGE" value="exception handling function" />
+    <MESSAGE value="tested" />
+    <option name="LAST_COMMIT_MESSAGE" value="tested" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/financial_data_creation/data_generation.py</url>
-          <line>75</line>
-          <option name="timeStamp" value="16" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/financial_data_creation/data_generation.py</url>
-          <line>22</line>
-          <option name="timeStamp" value="17" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/financial_data_creation/data_generation.py</url>
-          <line>23</line>
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/financial_data_creation/data_generation.py</url>
-          <line>68</line>
-          <option name="timeStamp" value="19" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/financial_data_creation/data_generation.py</url>
-          <line>59</line>
-          <option name="timeStamp" value="20" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/src/financial_data_creation/data_generation.py</url>
-          <line>65</line>
-          <option name="timeStamp" value="21" />
-        </line-breakpoint>
-      </breakpoints>
       <default-breakpoints>
         <breakpoint type="python-exception">
           <properties notifyOnTerminate="true" exception="BaseException">

@@ -1,7 +1,6 @@
-
 import inspect
 
-from financial_data_creation import fundamental_indicators_formulas as formulas
+from financial_data_creation import fundamental_indicators_formulas
 
 
 # validation
@@ -75,7 +74,9 @@ class ModuleFunctions:
         function_and_parameters = self.create_function_parameter_mapping()[formula_name]
         parameters = ParameterMatcher(data, function_and_parameters[formula_name]).parameters()
 
-        variable_value = self.get_formula_based_on_name_string(formula_name)(**parameters)
+        variable_value = exception_handling_division_by_zero(self.get_formula_based_on_name_string(formula_name)(**parameters))
+        if not variable_value:
+            return None
         variable_name = f"{formula_name}_value"
 
         return {variable_name: variable_value}
@@ -96,6 +97,9 @@ class ModuleFunctions:
 
                 if ParameterMatcher(data, parameters).status():
                     generated_name_value = self.formula_executor(formula_name, data)
+                    if not generated_name_value:
+                        formulas_tried += 1
+                        continue
                     data.update(generated_name_value)
                     del function_parameter_dict[formula_name]
                     break
@@ -142,5 +146,6 @@ class ParameterMatcher:
         return parameters_dict
 
 
-if __name__ == '__main__':
-    pass
+def data_creation(input_data, type_of_data="fundamental_data"):
+    if type_of_data.lower() == "fundamental_data":
+        return ModuleFunctions(fundamental_indicators_formulas, input_data).data_generator()

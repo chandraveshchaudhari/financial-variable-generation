@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="30739aa5-5212-4d95-b010-eb22caa8d281" name="Changes" comment="typo changes">
+    <list default="true" id="30739aa5-5212-4d95-b010-eb22caa8d281" name="Changes" comment="removed total from parameters and functions names">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/financial_data_creation/fundamental_indicators_formulas.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/financial_data_creation/fundamental_indicators_formulas.py" afterDir="false" />
     </list>
@@ -219,7 +219,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651511459708</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="removed total from parameters and functions names">
+      <created>1651651260294</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1651651260294</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -253,7 +260,8 @@
     <MESSAGE value="parameters with &quot;&quot;_value format" />
     <MESSAGE value="created DataCreation class for generating data and info" />
     <MESSAGE value="typo changes" />
-    <option name="LAST_COMMIT_MESSAGE" value="typo changes" />
+    <MESSAGE value="removed total from parameters and functions names" />
+    <option name="LAST_COMMIT_MESSAGE" value="removed total from parameters and functions names" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

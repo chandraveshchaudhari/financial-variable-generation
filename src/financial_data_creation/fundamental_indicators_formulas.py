@@ -210,8 +210,8 @@ def interest_coverage_formula_or_times_interest_earned(ebit_value, interest_expe
     return ebit_value / interest_expense_value
 
 
-def long_term_debt_ratio(long_term_debt_value, asset_value):
-    return long_term_debt_value / asset_value
+def long_term_debt_ratio(long_term_debt_value, assets_value):
+    return long_term_debt_value / assets_value
 
 
 def operating_cash_flow_ratio(operating_cash_flow_value, current_liabilities_value):
@@ -415,7 +415,7 @@ def inventory_turnover(cost_of_goods_sold_value, average_inventory_value):
     return cost_of_goods_sold_value / average_inventory_value
 
 
-def net_asset_growth_rate(final_net_assets_value, initial_net_assets_value):
+def net_assets_growth_rate(final_net_assets_value, initial_net_assets_value):
     return growth_rate(final_net_assets_value, initial_net_assets_value)
 
 

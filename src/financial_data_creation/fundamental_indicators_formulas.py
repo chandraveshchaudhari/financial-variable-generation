@@ -522,8 +522,8 @@ def gross_profit_margin_on_sales(gross_margin_amount_value, net_sales_value):
     return gross_margin_amount_value, net_sales_value
 
 
-def growth_in_equity_from_plowback(roe_value, plowback_ratio_value):
-    return roe_value * plowback_ratio_value
+def growth_in_equity_from_plowback(return_on_equity_value, plowback_ratio_value):
+    return return_on_equity_value * plowback_ratio_value
 
 
 def market_to_book_ratio(market_value_of_equity_value, book_value_of_equity_value):

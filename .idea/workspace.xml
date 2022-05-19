@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="30739aa5-5212-4d95-b010-eb22caa8d281" name="Changes" comment="removed total from parameters and functions names">
+    <list default="true" id="30739aa5-5212-4d95-b010-eb22caa8d281" name="Changes" comment="typo in asset and assets">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/financial_data_creation/fundamental_indicators_formulas.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/financial_data_creation/fundamental_indicators_formulas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/financial_data_creation/python_module_name.py" beforeDir="false" afterPath="$PROJECT_DIR$/src/financial_data_creation/python_module_name.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -226,7 +227,14 @@
       <option name="project" value="LOCAL" />
       <updated>1651651260294</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="typo in asset and assets">
+      <created>1651682373515</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1651682373515</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -261,7 +269,8 @@
     <MESSAGE value="created DataCreation class for generating data and info" />
     <MESSAGE value="typo changes" />
     <MESSAGE value="removed total from parameters and functions names" />
-    <option name="LAST_COMMIT_MESSAGE" value="removed total from parameters and functions names" />
+    <MESSAGE value="typo in asset and assets" />
+    <option name="LAST_COMMIT_MESSAGE" value="typo in asset and assets" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

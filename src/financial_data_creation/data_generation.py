@@ -1,25 +1,40 @@
+"""Utilities for generating derived financial indicators from raw inputs."""
+
+from __future__ import annotations
+
 import inspect
+from numbers import Real
 
 from financial_data_creation import fundamental_indicators_formulas
 
 
-# validation
 def validate_availability(data):
-    return True if data else False
+    """Return True when input data is present."""
+
+    return bool(data)
 
 
 def validate_input_data(financial_indicator_name_and_value_mapping):
-    validated_financial_indicator_name_and_value_mapping, invalidated_financial_indicator_name_and_value_mapping = dict(), dict()
+    """Split input values into numeric and non-numeric mappings."""
+
+    validated_financial_indicator_name_and_value_mapping = {}
+    invalidated_financial_indicator_name_and_value_mapping = {}
+
     for financial_name, financial_value in financial_indicator_name_and_value_mapping.items():
-        if not type(financial_value) in (int, float):
-            print(f"{financial_value} is not int or float")
-            invalidated_financial_indicator_name_and_value_mapping.update({financial_name: financial_value})
+        if isinstance(financial_value, bool) or not isinstance(financial_value, Real):
+            invalidated_financial_indicator_name_and_value_mapping[financial_name] = financial_value
         else:
-            validated_financial_indicator_name_and_value_mapping.update({financial_name: financial_value})
-    return validated_financial_indicator_name_and_value_mapping, invalidated_financial_indicator_name_and_value_mapping
+            validated_financial_indicator_name_and_value_mapping[financial_name] = financial_value
+
+    return (
+        validated_financial_indicator_name_and_value_mapping,
+        invalidated_financial_indicator_name_and_value_mapping,
+    )
 
 
 def exception_handling_division_by_zero(function, **kwargs):
+    """Return ``None`` when a ratio cannot be computed because of division by zero."""
+
     try:
         return function(**kwargs)
     except ZeroDivisionError:
@@ -27,110 +42,100 @@ def exception_handling_division_by_zero(function, **kwargs):
 
 
 class ModuleFunctions:
+    """Inspect formula modules and generate indicators from available inputs."""
+
     def __init__(self, module, input_data=None):
-
         self.module = module
-        self.data = validate_input_data(input_data)[0] if input_data else None
+        self.data = validate_input_data(input_data)[0] if input_data else {}
 
-    # Parameters related
     def get_list_of_tuples_of_functions_name_and_function_object(self):
         return inspect.getmembers(self.module, inspect.isfunction)
 
     def function_names_set(self):
-        list_of_tuples_of_functions_name_and_function_object = self.get_list_of_tuples_of_functions_name_and_function_object()
-        function_name_set = set()
-
-        for tuples_of_functions_name_and_function_object in list_of_tuples_of_functions_name_and_function_object:
-            function_name = tuples_of_functions_name_and_function_object[0]
-            function_name_set.add(function_name)
-
-        return function_name_set
+        return {
+            function_name
+            for function_name, _function_object in self.get_list_of_tuples_of_functions_name_and_function_object()
+        }
 
     def parameter_set(self):
-        list_of_tuples_of_functions_name_and_function_object = self.get_list_of_tuples_of_functions_name_and_function_object()
         parameters_set = set()
-
-        for tuples_of_functions_name_and_function_object in list_of_tuples_of_functions_name_and_function_object:
-            for parameter_name in tuples_of_functions_name_and_function_object[1].__code__.co_varnames:
-                parameters_set.add(parameter_name)
-
+        for _function_name, function_object in self.get_list_of_tuples_of_functions_name_and_function_object():
+            signature = inspect.signature(function_object)
+            parameters_set.update(signature.parameters.keys())
         return parameters_set
 
     def create_function_parameter_mapping(self):
-        """Future features: this will create mapping based on all, profitability, liquidity, efficiency ratios
+        """Map each formula to its required and optional parameters."""
 
-        Returns
-        -------
+        function_parameter_mapping = {}
 
-        """
+        for function_name, function_object in self.get_list_of_tuples_of_functions_name_and_function_object():
+            required_parameters = []
+            optional_parameters = []
 
-        list_of_tuples_of_functions_name_and_function_object = self.get_list_of_tuples_of_functions_name_and_function_object()
-        function_parameter_mapping = dict()
+            for parameter_name, parameter in inspect.signature(function_object).parameters.items():
+                if parameter.default is inspect._empty:
+                    required_parameters.append(parameter_name)
+                else:
+                    optional_parameters.append(parameter_name)
 
-        for function in list_of_tuples_of_functions_name_and_function_object:
-            argument_counts = function[1].__code__.co_argcount if function[1].__code__.co_argcount else 0
-            default_counts = len(function[1].__defaults__) if function[1].__defaults__ else 0
-            non_default_count = argument_counts - default_counts
-            parameter_list = [function[1].__code__.co_varnames[:non_default_count],
-                              function[1].__code__.co_varnames[non_default_count:]]
-            function_parameter_mapping[function[0]] = parameter_list
+            function_parameter_mapping[function_name] = [tuple(required_parameters), tuple(optional_parameters)]
 
         return function_parameter_mapping
 
     def function_name_string_function_object_mapping(self):
-        name_and_function_dict = dict()
-        list_of_tuples_of_functions_name_and_function_object = self.get_list_of_tuples_of_functions_name_and_function_object()
-        for function_detail in list_of_tuples_of_functions_name_and_function_object:
-            name_and_function_dict[function_detail[0]] = function_detail[1]
-
-        return name_and_function_dict
+        return {
+            function_name: function_object
+            for function_name, function_object in self.get_list_of_tuples_of_functions_name_and_function_object()
+        }
 
     def get_formula_based_on_name_string(self, formula_name):
         return self.function_name_string_function_object_mapping()[formula_name]
 
     def formula_executor(self, formula_name, data):
-
         function_and_parameters = self.create_function_parameter_mapping()
         parameters = ParameterMatcher(data, function_and_parameters[formula_name]).parameter()
 
-        variable_value = exception_handling_division_by_zero(self.get_formula_based_on_name_string(formula_name),
-                                                             **parameters)
-        if not variable_value:
+        variable_value = exception_handling_division_by_zero(
+            self.get_formula_based_on_name_string(formula_name),
+            **parameters,
+        )
+        if variable_value is None:
             return None
-        variable_name = f"{formula_name}_value"
 
+        variable_name = f"{formula_name}_value"
         return {variable_name: variable_value}
 
     def data_generator(self):
-        """Future features: this will create mapping based on all, profitability, liquidity, efficiency ratios
+        """Iteratively generate every formula that can be derived from the available inputs."""
 
-        Returns
-        -------
-
-        """
-        data = self.data
+        data = dict(self.data)
         function_parameter_dict = self.create_function_parameter_mapping()
 
-        while True:
-            formulas_tried = 0
-            for formula_name, parameters in function_parameter_dict.items():
+        while function_parameter_dict:
+            progress_made = False
 
-                if ParameterMatcher(data, parameters).status():
-                    generated_name_value = self.formula_executor(formula_name, data)
-                    if not generated_name_value:
-                        formulas_tried += 1
-                        continue
-                    data.update(generated_name_value)
-                    del function_parameter_dict[formula_name]
-                    break
-                formulas_tried += 1
+            for formula_name, parameters in list(function_parameter_dict.items()):
+                if not ParameterMatcher(data, parameters).status():
+                    continue
 
-            if formulas_tried == len(function_parameter_dict):
-                return data
+                generated_name_value = self.formula_executor(formula_name, data)
+                del function_parameter_dict[formula_name]
+
+                if generated_name_value is None:
+                    continue
+
+                data.update(generated_name_value)
+                progress_made = True
+
+            if not progress_made:
+                break
+
+        return data
 
 
 def membership_checker(item, data_structure):
-    return True if item in data_structure else False
+    return item in data_structure
 
 
 class ParameterMatcher:
@@ -139,21 +144,13 @@ class ParameterMatcher:
         self.data = data
 
     def status(self, default_parameters_check=True):
+        """Return True when every required parameter is available."""
 
-        if default_parameters_check:
-            for default_variable in self.parameters[1]:
-                if not membership_checker(default_variable, self.data):
-                    print(
-                        f"{default_variable} is not provided, data_generator will use default value in formula function")
-
-        for var in self.parameters[0]:
-            if not membership_checker(var, self.data):
-                return False
-
-        return True
+        del default_parameters_check
+        return all(membership_checker(var, self.data) for var in self.parameters[0])
 
     def parameter(self):
-        parameters_dict = dict()
+        parameters_dict = {}
 
         for var in self.parameters[0]:
             if membership_checker(var, self.data):
@@ -162,26 +159,86 @@ class ParameterMatcher:
         for default_variable in self.parameters[1]:
             if membership_checker(default_variable, self.data):
                 parameters_dict[default_variable] = self.data[default_variable]
+
         return parameters_dict
 
 
 class DataCreation:
+    """Public API for deriving fundamental indicators from raw statement values."""
+
     def __init__(self, input_data=None, type_of_data="fundamental_data"):
-        self.type_of_data = type_of_data
-        self.input_data = input_data
+        self.type_of_data = type_of_data.lower()
+        self.input_data = input_data or {}
+
+    def _module_functions(self):
+        if self.type_of_data == "fundamental_data":
+            return ModuleFunctions(fundamental_indicators_formulas, self.input_data)
+        raise ValueError(f"Unsupported type_of_data: {self.type_of_data}")
 
     def generate(self):
-        if self.type_of_data.lower() == "fundamental_data":
-            return ModuleFunctions(fundamental_indicators_formulas, self.input_data).data_generator()
+        return self._module_functions().data_generator()
 
     def function_names_set(self):
-        if self.type_of_data.lower() == "fundamental_data":
-            return ModuleFunctions(fundamental_indicators_formulas).function_names_set()
+        return self._module_functions().function_names_set()
 
     def parameter_set(self):
-        if self.type_of_data.lower() == "fundamental_data":
-            return ModuleFunctions(fundamental_indicators_formulas).parameter_set()
+        return self._module_functions().parameter_set()
 
 
-if __name__ == "__main__":
-    pass
+def convert_to_average_stock_prices(bse_stockprice, time_column_name="Bmonth_Month End"):
+    """Aggregate monthly stock-price data into yearly company-level averages."""
+
+    try:
+        import pandas as pd
+    except ImportError as exc:
+        raise ImportError(
+            "pandas is required to use convert_to_average_stock_prices."
+        ) from exc
+
+    cleaned_stockprice = bse_stockprice.copy()
+    cleaned_stockprice.dropna(how="all", axis=1, inplace=True)
+
+    totalyears = len(cleaned_stockprice[time_column_name].unique()) // 12
+    yearlist = []
+    number = 202103.0
+    for _index in range(totalyears):
+        yearlist.append(number)
+        number -= 100
+
+    filtered_numeric_columns = [
+        "Bmonth_Open",
+        "Bmonth_High",
+        "Bmonth_Low",
+        "Bmonth_Close",
+        "Bmonth_Volume ('000)",
+        "Bmonth_Value",
+    ]
+    average_stock_price_columns = [f"avg__{column_name}" for column_name in filtered_numeric_columns]
+    average_stock_price_columns = [
+        "Accord Code",
+        "Company Name",
+        "Bmonth_Month End",
+        *average_stock_price_columns,
+    ]
+
+    company_names = list(cleaned_stockprice["Company Name"].unique())
+    data = []
+
+    for company in company_names:
+        for index in range(totalyears - 1):
+            filtered = cleaned_stockprice.loc[
+                (cleaned_stockprice["Company Name"] == company)
+                & (cleaned_stockprice["Bmonth_Month End"] < yearlist[index])
+                & (cleaned_stockprice["Bmonth_Month End"] >= yearlist[index + 1])
+            ]
+
+            if filtered.empty:
+                continue
+
+            values = [filtered["Accord Code"].values[0], company, yearlist[index]]
+            for numeric_column in filtered_numeric_columns:
+                values.append(filtered[numeric_column].mean())
+            data.append(dict(zip(average_stock_price_columns, values)))
+
+    return pd.DataFrame(data)
+
